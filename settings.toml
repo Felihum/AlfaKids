@@ -1,0 +1,4 @@
+[development]
+key="dev"
+SQLALQUEMY_DB_URI="postgresql://postgres:password@localhost:5432/apiPythonDb"
+SQLALCHEMY_TRACK_MODIFICATIONS=false
