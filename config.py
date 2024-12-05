@@ -13,7 +13,7 @@ class DevelopmentConfig(Config):
     IP_HOST = 'localhost'
     PORT_HOST = 8000
     URL_MAIN = 'http//%s/%s' % (IP_HOST, PORT_HOST)
-    SQLALQUEMY_DATABASE_URI = "postgresql://postgres:password@localhost:5432/apiPythonDb"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@localhost:5432/alfaKidsDb"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 app_config = {

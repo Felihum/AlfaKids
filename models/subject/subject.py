@@ -1,4 +1,4 @@
-from ...db import database
+from db import database
 
 
 class Subject(database.Model):
