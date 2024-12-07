@@ -4,6 +4,7 @@ from db import database
 from config import app_config, app_active
 from flask_migrate import Migrate
 from views.student_view import bp_student
+from views.accountable_view import bp_accountable
 
 config = app_config.get(app_active)
 
@@ -17,6 +18,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
     app.register_blueprint(bp_student)
+    app.register_blueprint(bp_accountable)
 
     database.init_app(app)
 
@@ -27,8 +29,10 @@ def create_app():
     with app.app_context():
         from models.student.student import Student
         from models.subject.subject import Subject
-        from models.activity.activity_objective import ActivityObjective
-        from models.activity.activity_discursive import ActivityDiscursive
+        from models.activity.activity import Activity
+        from models.question.question import Question
+        from models.question.discursive_question import DiscursiveQuestion
+        from models.question.objective_question import ObjectiveQuestion
         from models.accountable.accountable import Accountable
         #database.create_all()
 

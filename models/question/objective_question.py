@@ -1,11 +1,9 @@
 from db import database
-from models.subject import subject
+from models.question import question
 
 
-class ActivityObjective(database.Model):
-    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
-    title = database.Column(database.Text(), nullable=False)
-    id_subject = database.Column(database.Integer, database.ForeignKey(subject.Subject.id), nullable=False)
+class ObjectiveQuestion(question.Question, database.Model):
+    id_question = database.Column(database.Integer, database.ForeignKey(question.Question.id), primary_key=True, nullable=False)
     answer1 = database.Column(database.String(120), nullable=False)
     answer2 = database.Column(database.String(120), nullable=False)
     answer3 = database.Column(database.String(120), nullable=False)
