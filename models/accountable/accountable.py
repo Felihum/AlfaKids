@@ -1,5 +1,5 @@
 from db import database
-from models.client import student
+from models.student import student
 
 
 class Accountable(database.Model):
