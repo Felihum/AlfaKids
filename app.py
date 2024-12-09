@@ -1,12 +1,15 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from db import database
 from config import app_config, app_active
 from flask_migrate import Migrate
 from views.student_view import bp_student
 from views.accountable_view import bp_accountable
+from views.activity_view import bp_activity
+from views.subject_view import bp_subject
+from views.question_view import bp_question
 
 config = app_config.get(app_active)
+
 
 def create_app():
     app = Flask(__name__, template_folder='templates')
@@ -19,6 +22,9 @@ def create_app():
 
     app.register_blueprint(bp_student)
     app.register_blueprint(bp_accountable)
+    app.register_blueprint(bp_activity)
+    app.register_blueprint(bp_subject)
+    app.register_blueprint(bp_question)
 
     database.init_app(app)
 
@@ -34,6 +40,5 @@ def create_app():
         from models.question.discursive_question import DiscursiveQuestion
         from models.question.objective_question import ObjectiveQuestion
         from models.accountable.accountable import Accountable
-        #database.create_all()
 
     return app
