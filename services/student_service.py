@@ -1,6 +1,7 @@
 from flask import Request, jsonify
 from models.student.student import Student
 from db import database
+from models.class_allocation.class_allocation import ClassAllocation
 
 
 class StudentService:
@@ -45,6 +46,22 @@ class StudentService:
 
         return jsonify({"message": "Student found",
                         "student": student.to_dict()}), 200
+
+    @staticmethod
+    def get_students_by_classroom_id(id_classroom):
+        class_allocations = ClassAllocation.query.filter_by(id_classroom=id_classroom).all()
+        students = list()
+
+        if not class_allocations:
+            return jsonify({"error": "There are no students in this classroom!"}), 404
+
+        for class_allocation in class_allocations:
+            students.append(Student.query.get(class_allocation.id_student))
+
+        students_dict_list = [student.to_dict() for student in students]
+
+        return jsonify({"message": "Students found",
+                        "students": students_dict_list}), 200
 
     @staticmethod
     def update_student(id_student, request: Request):

@@ -2,6 +2,8 @@ from flask import Request, jsonify
 from db import database
 from models.activity.activity_status import ActivityStatus
 from models.activity.activity import Activity
+from models.classroom.classroom import Classroom
+from models.activity_distribution.activity_distribution import ActivityDistribution
 
 
 class ActivityService:
@@ -13,18 +15,53 @@ class ActivityService:
         title: str = activity_request["title"]
         status: str = ActivityStatus.INITIALIZED.name
         id_subject: int = activity_request["id_subject"]
-        id_student: int = activity_request["id_student"]
+        id_professor: int = activity_request["id_professor"]
 
-        if not title or not status or not id_subject or not id_student:
-            return jsonify({"error": "Some field is missing!"})
+        if not title or not status or not id_subject or not id_professor:
+            return jsonify({"error": "Some field is missing!"}), 400
 
-        activity: Activity = Activity(title, status, id_subject, id_student)
+        activity: Activity = Activity(title, status, id_subject, id_professor)
 
         database.session.add(activity)
         database.session.commit()
 
         return jsonify({"message": "Activity initialized successfully!",
-                        "activity": activity.to_dict()})
+                        "activity": activity.to_dict()}), 201
+
+    @staticmethod
+    def distribute_activity(request: Request):
+        distribution_request = request.get_json()
+
+        id_classroom: int = distribution_request["id_classroom"]
+        id_activity: int = distribution_request["id_activity"]
+
+        classroom: Classroom = Classroom.query.get(id_classroom)
+        activity: Activity = Activity.query.get(id_activity)
+
+        existing_distribution = ActivityDistribution.query.filter_by(id_activity=id_activity, id_classroom=id_classroom).first()
+
+        if existing_distribution:
+            return jsonify({"error": "Activity already distributed in this classroom!"}), 500
+
+        if activity.status != ActivityStatus.PUBLISHED.name:
+            activity.status = ActivityStatus.PUBLISHED.name
+
+        if not activity:
+            return jsonify({"error": "Activity not found!"}), 404
+
+        if not classroom:
+            return jsonify({"error": "Classroom not found!"}), 404
+
+        if not id_classroom or not id_activity:
+            return jsonify({"error": "Some field is missing!"})
+
+        distribution: ActivityDistribution = ActivityDistribution(id_activity, id_classroom)
+
+        database.session.add(distribution)
+        database.session.commit()
+
+        return jsonify({"message": "Distribution created successfully!",
+                        "distribution": distribution.to_dict()})
 
     @staticmethod
     def get_activity_by_id(id_activity):
@@ -37,15 +74,31 @@ class ActivityService:
                         "activity": activity.to_dict()}), 200
 
     @staticmethod
-    def get_activities_by_student_id(id_student):
-        activities = Activity.query.filter_by(id_student=id_student).all()
+    def get_activities_by_professor_id(id_professor):
+        activities = Activity.query.filter_by(id_professor=id_professor).all()
 
         if not activities:
-            return jsonify({"error": "There are no accountables!"}), 404
+            return jsonify({"error": "There are no activities!"}), 404
 
         activities_dict_list = [activity.to_dict() for activity in activities]
 
         return jsonify({"message": "Activities found",
+                        "activities": activities_dict_list}), 200
+
+    @staticmethod
+    def get_activities_by_classroom_id(id_classroom):
+        activity_distributions = ActivityDistribution.query.filter_by(id_classroom=id_classroom).all()
+        activities = list()
+
+        if not activity_distributions:
+            return jsonify({"error": "There are no activities in this classroom!"}), 404
+
+        for activity_distribution in activity_distributions:
+            activities.append(Activity.query.get(activity_distribution.id_activity))
+
+        activities_dict_list = [activity.to_dict() for activity in activities]
+
+        return jsonify({"message": "Activity found",
                         "activities": activities_dict_list}), 200
 
     @staticmethod
@@ -63,7 +116,7 @@ class ActivityService:
                         "activity": activity.to_dict()}), 200
 
     @staticmethod
-    def update_activity(id_activity, title):
+    def update_activity_title(id_activity, title):
         activity: Activity = Activity.query.get(id_activity)
 
         if not activity:
@@ -87,4 +140,3 @@ class ActivityService:
         database.session.commit()
 
         return jsonify({"message": "Activity deleted successfully!"}), 200
-

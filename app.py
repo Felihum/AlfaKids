@@ -7,6 +7,8 @@ from views.accountable_view import bp_accountable
 from views.activity_view import bp_activity
 from views.subject_view import bp_subject
 from views.question_view import bp_question
+from views.professor_view import bp_professor
+from views.classroom_view import bp_classroom
 
 config = app_config.get(app_active)
 
@@ -25,6 +27,8 @@ def create_app():
     app.register_blueprint(bp_activity)
     app.register_blueprint(bp_subject)
     app.register_blueprint(bp_question)
+    app.register_blueprint(bp_professor)
+    app.register_blueprint(bp_classroom)
 
     database.init_app(app)
 
@@ -39,6 +43,9 @@ def create_app():
         from models.question.question import Question
         from models.question.discursive_question import DiscursiveQuestion
         from models.question.objective_question import ObjectiveQuestion
+        from models.professor.professor import Professor
         from models.accountable.accountable import Accountable
+        from models.activity_distribution.activity_distribution import ActivityDistribution
+        from models.class_allocation.class_allocation import ClassAllocation
 
     return app

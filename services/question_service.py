@@ -1,5 +1,3 @@
-import array
-
 from flask import Request, jsonify
 from db import database
 from models.question.question import Question
@@ -24,7 +22,9 @@ class QuestionService:
                 return jsonify({"error": "Some field(s) has no value."}), 400
 
             question: Question = Question(statement, question_type, id_activity)
-            new_discursive_question: DiscursiveQuestion = DiscursiveQuestion(question.statement, question.type, question.id_activity, question.id, expected_answer)
+            new_discursive_question: DiscursiveQuestion = DiscursiveQuestion(question.statement, question.type,
+                                                                             question.id_activity, question.id,
+                                                                             expected_answer)
 
             database.session.add(new_discursive_question)
             database.session.commit()
@@ -40,11 +40,18 @@ class QuestionService:
             answer4: str = request_question["answer4"]
             right_answer: str = request_question["right_answer"]
 
-            if not statement or not question_type or not id_activity or not answer1 or not answer2 or not answer3 or not answer4 or not right_answer:
+            if (not statement or not question_type
+                    or not id_activity or not answer1
+                    or not answer2 or not answer3
+                    or not answer4 or not right_answer):
                 return jsonify({"error": "Some field(s) has no value."}), 400
 
             question: Question = Question(statement, question_type, id_activity)
-            new_objective_question: ObjectiveQuestion = ObjectiveQuestion(question.statement, question.type, question.id_activity, question.id, answer1, answer2, answer3, answer4, right_answer)
+            new_objective_question: ObjectiveQuestion = ObjectiveQuestion(question.statement, question.type,
+                                                                          question.id_activity, question.id,
+                                                                          answer1, answer2,
+                                                                          answer3, answer4,
+                                                                          right_answer)
             database.session.add(new_objective_question)
             database.session.commit()
 

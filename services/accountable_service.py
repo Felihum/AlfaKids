@@ -12,25 +12,25 @@ class AccountableService:
 
         name: str = request_accountable["name"]
         email: str = request_accountable["email"]
-        password: str = request_accountable["password"]
+        telephone: str = request_accountable["telephone"]
         id_student: int = request_accountable["id_student"]
 
-        if not name or not email or not password or not id_student:
+        if not name or not email or not telephone or not id_student:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
         if not StudentService.get_student_by_id(id_student):
             return jsonify({"error": "Student not found!"}), 404
 
-        new_accountable: Accountable = Accountable(name, email, password, id_student)
+        new_accountable: Accountable = Accountable(name, email, telephone, id_student)
         database.session.add(new_accountable)
         database.session.commit()
 
-        return jsonify({"message": "Student registered successfully!",
-                        "student": new_accountable.to_dict()}), 201
+        return jsonify({"message": "Accountable registered successfully!",
+                        "accountable": new_accountable.to_dict()}), 201
 
     @staticmethod
-    def get_accountable_by_id(id_student):
-        accountable: Accountable = Accountable.query.get(id_student)
+    def get_accountable_by_id(id_accountable):
+        accountable: Accountable = Accountable.query.get(id_accountable)
 
         if not accountable:
             return jsonify({"error": "Accountable not found"}), 404
@@ -65,7 +65,7 @@ class AccountableService:
         accountable: Accountable = Accountable.query.get(id_student)
 
         if not accountable:
-            return jsonify({"error": "Student not found"}), 404
+            return jsonify({"error": "Accountable not found"}), 404
 
         request_accountable = request.get_json()
 
@@ -82,8 +82,8 @@ class AccountableService:
 
         database.session.commit()
 
-        return jsonify({"message": "Student updated successfully!",
-                        "student": accountable.to_dict()}), 200
+        return jsonify({"message": "Accountable updated successfully!",
+                        "accountable": accountable.to_dict()}), 200
 
     @staticmethod
     def delete_accountable(id_accountable):
