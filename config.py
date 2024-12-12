@@ -15,7 +15,7 @@ class DevelopmentConfig(Config):
     IP_HOST = 'localhost'
     PORT_HOST = 8000
     URL_MAIN = 'http//%s/%s' % (IP_HOST, PORT_HOST)
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@localhost:5432/alfaKidsDb"
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
