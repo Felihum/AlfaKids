@@ -9,6 +9,9 @@ from views.subject_view import bp_subject
 from views.question_view import bp_question
 from views.professor_view import bp_professor
 from views.classroom_view import bp_classroom
+from views.auth_view import bp_auth
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 config = app_config.get(app_active)
 
@@ -21,6 +24,8 @@ def create_app():
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
+    app.config["JWT_SECRET_KEY"] = config.JWT_SECRET_KEY
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = config.JWT_ACCESS_TOKEN_EXPIRES
 
     app.register_blueprint(bp_student)
     app.register_blueprint(bp_accountable)
@@ -29,12 +34,17 @@ def create_app():
     app.register_blueprint(bp_question)
     app.register_blueprint(bp_professor)
     app.register_blueprint(bp_classroom)
+    app.register_blueprint(bp_auth)
 
     database.init_app(app)
 
     migrate = Migrate()
 
     migrate.init_app(app, database)
+
+    jwt = JWTManager(app)
+
+    CORS(app)
 
     with app.app_context():
         from models.student.student import Student

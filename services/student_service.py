@@ -28,6 +28,18 @@ class StudentService:
                         "student": new_student.to_dict()}), 201
 
     @staticmethod
+    def get_all_students():
+        students: Student = Student.query.all()
+
+        if not students:
+            return jsonify({"error": "There are no students."}), 404
+        
+        students_dict_list = [student.to_dict() for student in students]
+
+        return jsonify({"message": "Students found",
+                        "students": students_dict_list}), 200
+    
+    @staticmethod
     def get_student_by_id(id_student):
         student: Student = Student.query.get(id_student)
 
@@ -53,7 +65,8 @@ class StudentService:
         students = list()
 
         if not class_allocations:
-            return jsonify({"error": "There are no students in this classroom!"}), 404
+            return jsonify({"message": "There are no students in this classroom!",
+                            "students": []}), 200
 
         for class_allocation in class_allocations:
             students.append(Student.query.get(class_allocation.id_student))

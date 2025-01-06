@@ -63,12 +63,12 @@ class QuestionService:
         objective_question = ObjectiveQuestion.query.get(id_question)
         if objective_question:
             return jsonify({"message": "Question found",
-                            "Objective Question": objective_question.to_dict()}), 200
+                            "question": objective_question.to_dict()}), 200
 
         discursive_question = DiscursiveQuestion.query.get(id_question)
         if discursive_question:
             return jsonify({"message": "Question found",
-                            "Discursive Question": discursive_question.to_dict()}), 200
+                            "question": discursive_question.to_dict()}), 200
 
         return jsonify({"error": "Question not found!"}), 404
 
@@ -77,12 +77,19 @@ class QuestionService:
         objective_questions = ObjectiveQuestion.query.filter_by(id_activity=id_activity).all()
         discursive_questions = DiscursiveQuestion.query.filter_by(id_activity=id_activity).all()
 
-        objective_question_dict_list = [objective_question.to_dict() for objective_question in objective_questions]
-        discursive_question_dict_list = [discursive_question.to_dict() for discursive_question in discursive_questions]
+        question_dict_list = []
+
+        #question_dict_list.append([objective_question.to_dict() for objective_question in objective_questions])
+        #question_dict_list.append([discursive_question.to_dict() for discursive_question in discursive_questions])
+
+        for question in objective_questions:
+            question_dict_list.append(question.to_dict())
+
+        for question in discursive_questions:
+            question_dict_list.append(question.to_dict())
 
         return jsonify({"message": "Question found",
-                        "Objective Questions": objective_question_dict_list,
-                        "Discursive Questions": discursive_question_dict_list}), 200
+                        "questions": question_dict_list}), 200
 
     @staticmethod
     def update_question(id_question: int, request: Request):
@@ -90,13 +97,14 @@ class QuestionService:
 
         statement: str = request_question["statement"]
 
-        discursive_question: DiscursiveQuestion = DiscursiveQuestion.query.filter_by(id_question=id_question).first()
+        discursive_question: DiscursiveQuestion = DiscursiveQuestion.query.get(id_question)
         if discursive_question:
             expected_answer: str = request_question["expected_answer"]
 
             if not statement or not expected_answer:
                 return jsonify({"error": "Some field(s) has no value."}), 400
 
+            discursive_question.statement = statement
             discursive_question.expected_answer = expected_answer
 
             database.session.commit()
@@ -104,7 +112,7 @@ class QuestionService:
             return jsonify({"message": "Question updated successfully!",
                             "question": discursive_question.to_dict()}), 201
 
-        objective_question: ObjectiveQuestion = ObjectiveQuestion.query.filter_by(id_question=id_question).first()
+        objective_question: ObjectiveQuestion = ObjectiveQuestion.query.get(id_question)
         if objective_question:
             answer1: str = request_question["answer1"]
             answer2: str = request_question["answer2"]
@@ -115,6 +123,7 @@ class QuestionService:
             if not statement or not answer1 or not answer2 or not answer3 or not answer4 or not right_answer:
                 return jsonify({"error": "Some field(s) has no value."}), 400
 
+            objective_question.statement = statement
             objective_question.answer1 = answer1
             objective_question.answer2 = answer2
             objective_question.answer3 = answer3

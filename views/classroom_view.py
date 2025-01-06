@@ -34,6 +34,11 @@ def get_classrooms_by_student_id(id_student: int):
     return ClassroomService.get_classrooms_by_student_id(id_student)
 
 
+@bp_classroom.route("/findByProfessorId/<int:id_professor>", methods=["GET"])
+def get_classrooms_by_professor_id(id_professor: int):
+    return ClassroomService.get_classrooms_by_professor_id(id_professor)
+
+
 @bp_classroom.route("/close/<int:id_classroom>", methods=["PUT"])
 def close_classroom(id_classroom: int):
     return ClassroomService.close_classroom(id_classroom)

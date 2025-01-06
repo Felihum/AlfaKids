@@ -103,6 +103,18 @@ class ClassroomService:
 
         return jsonify({"message": "Classrooms found",
                         "classrooms": classrooms_dict_list}), 200
+    
+    @staticmethod
+    def get_classrooms_by_professor_id(id_professor: int):
+        classrooms = Classroom.query.filter_by(id_professor=id_professor).all()
+
+        if not classrooms:
+            return jsonify({"error": "There are no classrooms!"}), 404
+
+        classrooms_dict_list = [classroom.to_dict() for classroom in classrooms]
+
+        return jsonify({"message": "Classrooms found",
+                        "classrooms": classrooms_dict_list}), 200
 
     @staticmethod
     def fulfill_classroom(id_classroom: int):

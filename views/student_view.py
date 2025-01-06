@@ -14,6 +14,11 @@ def get_student_by_id(id_student):
     return StudentService.get_student_by_id(id_student)
 
 
+@bp_student.route("/findAll", methods=["GET"])
+def get_all_students():
+    return StudentService.get_all_students()
+
+
 @bp_student.route("/findByClassroomId/<int:id_classroom>", methods=["GET"])
 def get_students_by_classroom_id(id_classroom):
     return StudentService.get_students_by_classroom_id(id_classroom)

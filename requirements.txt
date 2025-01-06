@@ -4,3 +4,4 @@ SQLAlchemy~=2.0.36
 Flask-SQLAlchemy~=3.0.0
 Flask-Migrate~=4.0.4
 psycopg2-binary~=2.9.8
+Flask-Cors~=4.0.0
