@@ -34,6 +34,17 @@ def get_classrooms_by_student_id(id_student: int):
     return ClassroomService.get_classrooms_by_student_id(id_student)
 
 
+@bp_classroom.route("/findByActivityId/<int:id_activity>", methods=["GET"])
+def get_classrooms_by_activity_id(id_activity: int):
+    return ClassroomService.get_classrooms_by_activity_id(id_activity)
+
+
+@bp_classroom.route("/findClassroomsToDistribute/<int:id_activity>/<int:id_professor>", methods=["GET"])
+def get_classrooms_to_distribute(id_activity: int, id_professor: int):
+    return ClassroomService.get_classrooms_to_distribute(id_activity, id_professor)
+
+
+
 @bp_classroom.route("/findByProfessorId/<int:id_professor>", methods=["GET"])
 def get_classrooms_by_professor_id(id_professor: int):
     return ClassroomService.get_classrooms_by_professor_id(id_professor)

@@ -1,5 +1,6 @@
 from flask import Request, jsonify
 from db import database
+from models.activity_distribution.activity_distribution import ActivityDistribution
 from models.classroom.classroom_status import ClassroomStatus
 from models.classroom.classroom import Classroom
 from models.student.student import Student
@@ -67,6 +68,47 @@ class ClassroomService:
 
         return jsonify({"message": "Allocation created successfully!",
                         "allocation": allocation.to_dict()}), 201
+
+    @staticmethod
+    def get_classrooms_by_activity_id(id_activity: int):
+        classroom_distributions = ActivityDistribution.query.filter_by(id_activity=id_activity).all()
+        classrooms = list()
+
+        if not classroom_distributions:
+            return jsonify({"error": "There are no classrooms!"}), 404
+
+        for classroom_distribution in classroom_distributions:
+            classrooms.append(Classroom.query.get(classroom_distribution.id_classroom))
+
+        classrooms_dict_list = [classroom.to_dict() for classroom in classrooms]
+
+        return jsonify({"message": "Classrooms found",
+                        "classrooms": classrooms_dict_list}), 200
+
+
+    @staticmethod
+    def get_classrooms_to_distribute(id_activity, id_professor):
+        professor_classrooms = Classroom.query.filter_by(id_professor=id_professor).all()
+        distributions = ActivityDistribution.query.filter_by(id_activity=id_activity).all()
+
+        if not professor_classrooms:
+            return jsonify({"error": "Professor has not classrooms!"}), 404
+
+        classroom_distributions = list()
+        filtered_classrooms = list()
+
+        for distribution in distributions:
+            classroom_distributions.append(Classroom.query.get(distribution.id_classroom))
+
+        for professor_classroom in professor_classrooms:
+            if not (professor_classroom in classroom_distributions):
+                filtered_classrooms.append(professor_classroom)
+
+        filtered_classrooms_dict_list = [classroom.to_dict() for classroom in filtered_classrooms]
+
+        return jsonify({"message": "Classrooms found",
+                        "classrooms": filtered_classrooms_dict_list}), 200
+
 
     @staticmethod
     def get_classroom_by_id(id_classroom: int):
