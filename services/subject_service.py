@@ -21,6 +21,18 @@ class SubjectService:
                         "subject": new_subject.to_dict()}), 201
 
     @staticmethod
+    def get_all_subjects():
+        subjects: Subject = Subject.query.all()
+
+        if not subjects:
+            return jsonify({"error": "There are no subjects."}), 404
+
+        subjects_dict_list = [subject.to_dict() for subject in subjects]
+
+        return jsonify({"message": "Subjects found",
+                        "subjects": subjects_dict_list}), 200
+
+    @staticmethod
     def get_subject_by_id(id_subject):
         subject: Subject = Subject.query.get(id_subject)
 
