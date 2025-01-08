@@ -13,8 +13,14 @@ services:
       DB_USER: postgres
       DB_PASSWORD: password
       DB_NAME: alfaKidsDb
+      FLASK_ENV: development
+      SQLALCHEMY_DATABASE_URI: postgresql://postgres:password@db:5432/alfaKidsDb
     depends_on:
       - db # Garante que o banco estará disponível antes da aplicação iniciar
+    command: >
+      sh -c "
+      flask db upgrade &&
+      python3 -m flask run --host=0.0.0.0"
     networks:
       - app-network
 
@@ -25,7 +31,6 @@ services:
     ports:
       - "5432:5432" # Porta do PostgreSQL
     environment:
-      DB_PORT: 5432
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: alfaKidsDb
