@@ -13,9 +13,9 @@ class DevelopmentConfig(Config):
     TESTING = True
     DEBUG = True
     IP_HOST = 'localhost'
-    PORT_HOST = 5000
+    PORT_HOST = 8000
     URL_MAIN = 'http//%s/%s' % (IP_HOST, PORT_HOST)
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@db:5432/alfaKidsDb"
+    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:password@localhost:5432/alfaKidsDb"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "YWxmYWtpZHMxMjM="
     JWT_ACCESS_TOKEN_EXPIRES = 3600
