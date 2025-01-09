@@ -212,6 +212,19 @@ class ClassroomService:
         if not classroom:
             return jsonify({"error": "Classroom not found"}), 404
 
+        activity_distributions = ActivityDistribution.query.filter_by(id_classroom=id_classroom).all()
+        class_allocations = ClassAllocation.query.filter_by(id_classroom=id_classroom).all()
+
+        if activity_distributions:
+            for activity_distribution in activity_distributions:
+                database.session.delete(activity_distribution)
+                database.session.commit()
+
+        if class_allocations:
+            for class_allocation in class_allocations:
+                database.session.delete(class_allocation)
+                database.session.commit()
+
         database.session.delete(classroom)
         database.session.commit()
 
