@@ -63,3 +63,8 @@ def update_classroom_professor(id_classroom: int):
 @bp_classroom.route("/delete/<int:id_classroom>", methods=["DELETE"])
 def delete_classroom(id_classroom: int):
     return ClassroomService.delete_classroom(id_classroom)
+
+
+@bp_classroom.route("/deleteStudentFromClassroom/<int:id_classroom>/<int:id_student>", methods=["DELETE"])
+def delete_student_from_classroom(id_classroom: int, id_student: int):
+    return ClassroomService.delete_student_from_classroom(id_classroom, id_student)

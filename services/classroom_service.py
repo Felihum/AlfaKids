@@ -229,3 +229,15 @@ class ClassroomService:
         database.session.commit()
 
         return jsonify({"message": "Classroom deleted successfully!"}), 200
+
+    @staticmethod
+    def delete_student_from_classroom(id_classroom: int, id_student: int):
+        allocation = ClassAllocation.query.filter_by(id_classroom=id_classroom, id_student=id_student).first()
+
+        if not allocation:
+            return jsonify({"error": "Allocation not found"}), 404
+
+        database.session.delete(allocation)
+        database.session.commit()
+
+        return jsonify({"message": "Student removed successfully!"}), 200
