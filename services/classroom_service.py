@@ -141,7 +141,9 @@ class ClassroomService:
         for class_allocation in class_allocations:
             classrooms.append(Classroom.query.get(class_allocation.id_classroom))
 
-        classrooms_dict_list = [classroom.to_dict() for classroom in classrooms]
+        filtered_classrooms = ClassroomService.filter_classrooms_by_closed_status(classrooms)
+
+        classrooms_dict_list = [classroom.to_dict() for classroom in filtered_classrooms]
 
         return jsonify({"message": "Classrooms found",
                         "classrooms": classrooms_dict_list}), 200
@@ -241,3 +243,13 @@ class ClassroomService:
         database.session.commit()
 
         return jsonify({"message": "Student removed successfully!"}), 200
+
+    @staticmethod
+    def filter_classrooms_by_closed_status(classrooms):
+        aux_classrooms = list()
+
+        for classroom in classrooms:
+            if classroom.status != ClassroomStatus.CLOSED.name:
+                aux_classrooms.append(classroom)
+
+        return aux_classrooms
