@@ -9,6 +9,7 @@ from views.subject_view import bp_subject
 from views.question_view import bp_question
 from views.professor_view import bp_professor
 from views.classroom_view import bp_classroom
+from views.student_answer_view import bp_answer
 from views.auth_view import bp_auth
 from views.student_accomplishment_view import bp_accomplishment
 from flask_cors import CORS
@@ -37,6 +38,7 @@ def create_app():
     app.register_blueprint(bp_classroom)
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_accomplishment)
+    app.register_blueprint(bp_answer)
 
     database.init_app(app)
 
@@ -60,5 +62,6 @@ def create_app():
         from models.activity_distribution.activity_distribution import ActivityDistribution
         from models.class_allocation.class_allocation import ClassAllocation
         from models.student_accomplishment.student_accomplishment import StudentAccomplishment
+        from models.student_answer.student_answer import StudentAnswer
 
     return app

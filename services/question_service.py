@@ -4,6 +4,7 @@ from models.question.question import Question
 from models.question.objective_question import ObjectiveQuestion
 from models.question.discursive_question import DiscursiveQuestion
 from models.question.question_type import QuestionType
+from models.student_answer.student_answer import StudentAnswer
 
 
 class QuestionService:
@@ -138,6 +139,13 @@ class QuestionService:
     @staticmethod
     def delete_question(id_question):
         question: Question = Question.query.get(id_question)
+
+        answers: StudentAnswer = StudentAnswer.query.filter_by(id_question=id_question).all()
+
+        if answers:
+            for answer in answers:
+                database.session.delete(answer)
+                database.session.commit()
 
         if not question:
             return jsonify({"error": "Question not found"}), 404
