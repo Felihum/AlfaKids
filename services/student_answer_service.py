@@ -12,11 +12,12 @@ class StudentAnswerService:
         answer: str = request_answer["answer"]
         id_activity: int = request_answer["id_activity"]
         id_question: int = request_answer["id_question"]
+        id_student: int = request_answer["id_student"]
 
-        if not answer or not id_activity or not id_question:
+        if not answer or not id_activity or not id_question or not id_student:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
-        new_answer: StudentAnswer = StudentAnswer(answer, id_activity, id_question)
+        new_answer: StudentAnswer = StudentAnswer(answer, id_activity, id_question, id_student)
 
         database.session.add(new_answer)
         database.session.commit()
