@@ -38,6 +38,26 @@ class StudentAnswerService:
                         "answers": answers_dict_list}), 200
 
     @staticmethod
+    def get_answers_by_student_id(id_student):
+        answer = StudentAnswer.query.filter_by(id_student=id_student).first()
+
+        if not answer:
+            return jsonify({"error": "No answer found."}), 404
+
+        return jsonify({"message": "Answer found",
+                        "answer": answer}), 200
+
+    @staticmethod
+    def get_answers_by_activity_id(id_activity):
+        answer = StudentAnswer.query.filter_by(id_activity=id_activity).first()
+
+        if not answer:
+            return jsonify({"error": "No answer found."}), 404
+
+        return jsonify({"message": "Answer found",
+                        "answer": answer}), 200
+
+    @staticmethod
     def get_answer_by_question_and_student_id(id_question, id_student):
         answer = StudentAnswer.query.filter_by(id_question=id_question, id_student=id_student).first()
 
@@ -46,6 +66,7 @@ class StudentAnswerService:
 
         return jsonify({"message": "Answer found",
                         "answer": answer.to_dict()}), 200
+
     @staticmethod
     def delete_answer(id_answer):
         answer: StudentAnswer = StudentAnswer.query.get(id_answer)

@@ -5,6 +5,8 @@ from models.activity.activity import Activity
 from models.classroom.classroom import Classroom
 from models.activity_distribution.activity_distribution import ActivityDistribution
 from models.question.question import Question
+from models.student_accomplishment.student_accomplishment import StudentAccomplishment
+from models.student_answer.student_answer import StudentAnswer
 from services.question_service import QuestionService
 
 
@@ -140,15 +142,28 @@ class ActivityService:
 
         activity_distributions = ActivityDistribution.query.filter_by(id_activity=id_activity).all()
         activity_questions = Question.query.filter_by(id_activity=id_activity).all()
+        activity_accomplishments = StudentAccomplishment.query.filter_by(id_activity=id_activity).all()
+        activity_answers = StudentAnswer.query.filter_by(id_activity=id_activity).all()
 
         if activity_distributions:
             for activity_distribution in activity_distributions:
                 database.session.delete(activity_distribution)
                 database.session.commit()
 
+        if activity_accomplishments:
+            for activity_accomplishment in activity_accomplishments:
+                database.session.delete(activity_accomplishment)
+                database.session.commit()
+
+        if activity_answers:
+            for activity_answer in activity_answers:
+                database.session.delete(activity_answer)
+                database.session.commit()
+
         if activity_questions:
             for activity_question in activity_questions:
-                QuestionService.delete_question(activity_question.id)
+                database.session.delete(activity_question)
+                database.session.commit()
 
         database.session.delete(activity)
         database.session.commit()
