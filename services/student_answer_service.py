@@ -14,7 +14,7 @@ class StudentAnswerService:
         id_question: int = request_answer["id_question"]
         id_student: int = request_answer["id_student"]
 
-        if not answer or not id_activity or not id_question or not id_student:
+        if not id_activity or not id_question or not id_student:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
         new_answer: StudentAnswer = StudentAnswer(answer, id_activity, id_question, id_student)

@@ -7,7 +7,6 @@ from models.activity_distribution.activity_distribution import ActivityDistribut
 from models.question.question import Question
 from models.student_accomplishment.student_accomplishment import StudentAccomplishment
 from models.student_answer.student_answer import StudentAnswer
-from services.question_service import QuestionService
 
 
 class ActivityService:
@@ -85,6 +84,49 @@ class ActivityService:
             return jsonify({"error": "There are no activities!"}), 404
 
         activities_dict_list = [activity.to_dict() for activity in activities]
+
+        return jsonify({"message": "Activities found",
+                        "activities": activities_dict_list}), 200
+
+    @staticmethod
+    def get_all_accomplished_activities(id_student):
+        accomplishments = StudentAccomplishment.query.filter_by(id_student=id_student).all()
+        activities = list()
+
+        for accomplishment in accomplishments:
+            activity: Activity = Activity.query.get(accomplishment.id_activity)
+
+            if activity:
+                activities.append(activity)
+
+        if not activities:
+            return jsonify({"error": "There are no accomplished activities!"}), 404
+
+        activities_dict_list = [activity.to_dict() for activity in activities]
+
+        return jsonify({"message": "Activities found",
+                        "activities": activities_dict_list}), 200
+
+    @staticmethod
+    def get_all_unaccomplished_activities(id_classroom, id_student):
+        activity_distributions = ActivityDistribution.query.filter_by(id_classroom=id_classroom).all()
+        activities = list()
+
+        if not activity_distributions:
+            return jsonify({"error": "There are no activities in this classroom!"}), 404
+
+        for activity_distribution in activity_distributions:
+            activities.append(Activity.query.get(activity_distribution.id_activity))
+
+        unaccomplished_activities = [
+            activity for activity in activities
+            if not StudentAccomplishment.query.filter_by(id_activity=activity.id, id_student=id_student).first()
+        ]
+
+        if not unaccomplished_activities:
+            return jsonify({"error": "There are no activities!"}), 404
+
+        activities_dict_list = [activity.to_dict() for activity in unaccomplished_activities]
 
         return jsonify({"message": "Activities found",
                         "activities": activities_dict_list}), 200

@@ -24,6 +24,16 @@ def get_activity_by_id(id_activity):
     return ActivityService.get_activity_by_id(id_activity)
 
 
+@bp_activity.route("/findAllUnaccomplished/<int:id_classroom>/<int:id_student>", methods=["GET"])
+def get_all_unaccomplished_activities(id_classroom, id_student):
+    return ActivityService.get_all_unaccomplished_activities(id_classroom, id_student)
+
+
+@bp_activity.route("/findAllAccomplished/<int:id_student>", methods=["GET"])
+def get_all_accomplished_activities(id_student):
+    return ActivityService.get_all_accomplished_activities(id_student)
+
+
 @bp_activity.route("/findByClassroomId/<int:id_classroom>", methods=["GET"])
 def get_activity_by_classroom_id(id_classroom):
     return ActivityService.get_activities_by_classroom_id(id_classroom)
