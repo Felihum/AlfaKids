@@ -1,14 +1,16 @@
+import uuid
 from db import database
+from sqlalchemy.dialects.postgresql import UUID
 from models.subject import subject
 from models.professor import professor
 
 
 class Activity(database.Model):
-    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
+    id = database.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     title = database.Column(database.Text(), nullable=False)
     status = database.Column(database.String(20), nullable=False)
-    id_subject = database.Column(database.Integer, database.ForeignKey(subject.Subject.id), nullable=False)
-    id_professor = database.Column(database.Integer, database.ForeignKey(professor.Professor.id), nullable=False)
+    id_subject = database.Column(UUID(as_uuid=True), database.ForeignKey(subject.Subject.id), nullable=False)
+    id_professor = database.Column(UUID(as_uuid=True), database.ForeignKey(professor.Professor.id), nullable=False)
 
     def __init__(self, title, status, id_subject, id_professor):
         self.title = title

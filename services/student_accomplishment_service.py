@@ -12,8 +12,8 @@ class StudentAccomplishmentService:
     def accomplish_activity(request: Request):
         request_accomplishment: StudentAccomplishment = request.get_json()
 
-        id_activity: int = request_accomplishment["id_activity"]
-        id_student: int = request_accomplishment["id_student"]
+        id_activity = request_accomplishment["id_activity"]
+        id_student = request_accomplishment["id_student"]
 
         if not id_activity or not id_student:
             return jsonify({"error": "Some field(s) has no value."}), 400

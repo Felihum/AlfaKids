@@ -14,7 +14,7 @@ class QuestionService:
 
         statement: str = request_question["statement"]
         question_type: str = request_question["type"]
-        id_activity: int = request_question["id_activity"]
+        id_activity = request_question["id_activity"]
 
         if question_type.upper() == QuestionType.DISCURSIVE.name:
             expected_answer: str = request_question["expected_answer"]
@@ -60,7 +60,7 @@ class QuestionService:
                             "question": new_objective_question.to_dict()}), 201
 
     @staticmethod
-    def get_question_by_id(id_question: int):
+    def get_question_by_id(id_question):
         objective_question = ObjectiveQuestion.query.get(id_question)
         if objective_question:
             return jsonify({"message": "Question found",
@@ -74,7 +74,7 @@ class QuestionService:
         return jsonify({"error": "Question not found!"}), 404
 
     @staticmethod
-    def get_questions_by_activity_id(id_activity: int):
+    def get_questions_by_activity_id(id_activity):
         objective_questions = ObjectiveQuestion.query.filter_by(id_activity=id_activity).all()
         discursive_questions = DiscursiveQuestion.query.filter_by(id_activity=id_activity).all()
 
@@ -93,7 +93,7 @@ class QuestionService:
                         "questions": question_dict_list}), 200
 
     @staticmethod
-    def update_question(id_question: int, request: Request):
+    def update_question(id_question, request: Request):
         request_question = request.get_json()
 
         statement: str = request_question["statement"]

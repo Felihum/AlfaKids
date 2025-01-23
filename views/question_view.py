@@ -9,21 +9,21 @@ def create_question():
     return QuestionService.create_question(request)
 
 
-@bp_question.route("/findById/<int:id_question>", methods=["GET"])
+@bp_question.route("/findById/<string:id_question>", methods=["GET"])
 def get_question_by_id(id_question):
     return QuestionService.get_question_by_id(id_question)
 
 
-@bp_question.route("/findByActivityId/<int:id_activity>", methods=["GET"])
+@bp_question.route("/findByActivityId/<string:id_activity>", methods=["GET"])
 def get_question_by_activity_id(id_activity):
     return QuestionService.get_questions_by_activity_id(id_activity)
 
 
-@bp_question.route("/update/<int:id_question>", methods=["PUT"])
+@bp_question.route("/update/<string:id_question>", methods=["PUT"])
 def update_question(id_question):
     return QuestionService.update_question(id_question, request)
 
 
-@bp_question.route("/delete/<int:id_question>", methods=["DELETE"])
+@bp_question.route("/delete/<string:id_question>", methods=["DELETE"])
 def delete_question(id_question):
     return QuestionService.delete_question(id_question)

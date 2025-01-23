@@ -13,7 +13,7 @@ class AccountableService:
         name: str = request_accountable["name"]
         email: str = request_accountable["email"]
         telephone: str = request_accountable["telephone"]
-        id_student: int = request_accountable["id_student"]
+        id_student = request_accountable["id_student"]
 
         if not name or not email or not telephone or not id_student:
             return jsonify({"error": "Some field(s) has no value."}), 400

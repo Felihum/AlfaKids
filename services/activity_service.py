@@ -17,8 +17,8 @@ class ActivityService:
 
         title: str = activity_request["title"]
         status: str = ActivityStatus.INITIALIZED.name
-        id_subject: int = activity_request["id_subject"]
-        id_professor: int = activity_request["id_professor"]
+        id_subject = activity_request["id_subject"]
+        id_professor = activity_request["id_professor"]
 
         if not title or not status or not id_subject or not id_professor:
             return jsonify({"error": "Some field is missing!"}), 400
@@ -35,8 +35,8 @@ class ActivityService:
     def distribute_activity(request: Request):
         distribution_request = request.get_json()
 
-        id_classroom: int = distribution_request["id_classroom"]
-        id_activity: int = distribution_request["id_activity"]
+        id_classroom = distribution_request["id_classroom"]
+        id_activity = distribution_request["id_activity"]
 
         classroom: Classroom = Classroom.query.get(id_classroom)
         activity: Activity = Activity.query.get(id_activity)

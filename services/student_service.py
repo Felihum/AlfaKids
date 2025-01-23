@@ -1,3 +1,5 @@
+import uuid
+
 from flask import Request, jsonify
 from models.student.student import Student
 from db import database

@@ -70,7 +70,7 @@ class ClassroomService:
                         "allocation": allocation.to_dict()}), 201
 
     @staticmethod
-    def get_classrooms_by_activity_id(id_activity: int):
+    def get_classrooms_by_activity_id(id_activity):
         classroom_distributions = ActivityDistribution.query.filter_by(id_activity=id_activity).all()
         classrooms = list()
 
@@ -111,7 +111,7 @@ class ClassroomService:
 
 
     @staticmethod
-    def get_classroom_by_id(id_classroom: int):
+    def get_classroom_by_id(id_classroom):
         classroom: Classroom = Classroom.query.get(id_classroom)
 
         if not classroom:
@@ -131,7 +131,7 @@ class ClassroomService:
                         "classroom": classroom.to_dict()}), 200
 
     @staticmethod
-    def get_classrooms_by_student_id(id_student: int):
+    def get_classrooms_by_student_id(id_student):
         class_allocations = ClassAllocation.query.filter_by(id_student=id_student).all()
         classrooms = list()
 
@@ -149,7 +149,7 @@ class ClassroomService:
                         "classrooms": classrooms_dict_list}), 200
     
     @staticmethod
-    def get_classrooms_by_professor_id(id_professor: int):
+    def get_classrooms_by_professor_id(id_professor):
         classrooms = Classroom.query.filter_by(id_professor=id_professor).all()
 
         if not classrooms:
@@ -161,7 +161,7 @@ class ClassroomService:
                         "classrooms": classrooms_dict_list}), 200
 
     @staticmethod
-    def fulfill_classroom(id_classroom: int):
+    def fulfill_classroom(id_classroom):
         classroom: Classroom = Classroom.query.get(id_classroom)
 
         if not classroom:
@@ -175,7 +175,7 @@ class ClassroomService:
                         "classroom": classroom.to_dict()}), 200
 
     @staticmethod
-    def close_classroom(id_classroom: int):
+    def close_classroom(id_classroom):
         classroom: Classroom = Classroom.query.get(id_classroom)
 
         if not classroom:
@@ -189,13 +189,13 @@ class ClassroomService:
                         "classroom": classroom.to_dict()}), 200
 
     @staticmethod
-    def update_classroom_professor(id_classroom: int, request: Request):
+    def update_classroom_professor(id_classroom, request: Request):
         classroom: Classroom = Classroom.query.get(id_classroom)
 
         if not classroom:
             return jsonify({"error": "Activity not found"}), 404
 
-        id_professor: int = request.get_json()["id_professor"]
+        id_professor = request.get_json()["id_professor"]
 
         if not id_professor:
             return jsonify({"error": "Some field is missing!"}), 400
@@ -208,7 +208,7 @@ class ClassroomService:
                         "classroom": classroom.to_dict()}), 200
 
     @staticmethod
-    def delete_classroom(id_classroom: int):
+    def delete_classroom(id_classroom):
         classroom: Classroom = Classroom.query.get(id_classroom)
 
         if not classroom:
@@ -233,7 +233,7 @@ class ClassroomService:
         return jsonify({"message": "Classroom deleted successfully!"}), 200
 
     @staticmethod
-    def delete_student_from_classroom(id_classroom: int, id_student: int):
+    def delete_student_from_classroom(id_classroom, id_student):
         allocation = ClassAllocation.query.filter_by(id_classroom=id_classroom, id_student=id_student).first()
 
         if not allocation:

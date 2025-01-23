@@ -10,9 +10,9 @@ class StudentAnswerService:
         request_answer: StudentAnswer = request.get_json()
 
         answer: str = request_answer["answer"]
-        id_activity: int = request_answer["id_activity"]
-        id_question: int = request_answer["id_question"]
-        id_student: int = request_answer["id_student"]
+        id_activity = request_answer["id_activity"]
+        id_question = request_answer["id_question"]
+        id_student = request_answer["id_student"]
 
         if not id_activity or not id_question or not id_student:
             return jsonify({"error": "Some field(s) has no value."}), 400

@@ -1,11 +1,13 @@
-from db import database
 from models.student import student
 from models.activity import activity
+import uuid
+from db import database
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class StudentAccomplishment(database.Model):
-    id_activity = database.Column(database.Integer, database.ForeignKey(activity.Activity.id), primary_key=True)
-    id_student = database.Column(database.Integer, database.ForeignKey(student.Student.id), primary_key=True)
+    id_activity = database.Column(UUID(as_uuid=True), database.ForeignKey(activity.Activity.id), primary_key=True, nullable=False)
+    id_student = database.Column(UUID(as_uuid=True), database.ForeignKey(student.Student.id), primary_key=True, nullable=False)
 
     def __init__(self, id_activity, id_student):
         self.id_activity = id_activity
