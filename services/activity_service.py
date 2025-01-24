@@ -2,6 +2,9 @@ from flask import Request, jsonify
 from db import database
 from models.activity.activity_status import ActivityStatus
 from models.activity.activity import Activity
+from models.activity.activity_response_dto import ActivityResponseDTO
+from models.subject.subject import Subject
+from models.professor.professor import Professor
 from models.classroom.classroom import Classroom
 from models.activity_distribution.activity_distribution import ActivityDistribution
 from models.question.question import Question
@@ -73,25 +76,34 @@ class ActivityService:
         if not activity:
             return jsonify({"error": "Activity not found"}), 404
 
+        subject = Subject.query.get(activity.id_subject)
+        professor = Professor.query.get(activity.id_professor)
+        activity_dto = ActivityResponseDTO(activity, subject, professor)
+
         return jsonify({"message": "Activity found",
-                        "activity": activity.to_dict()}), 200
+                        "activity": activity_dto.to_dict()}), 200
 
     @staticmethod
     def get_activities_by_professor_id(id_professor):
         activities = Activity.query.filter_by(id_professor=id_professor).all()
+        activities_list_dto = list()
 
         if not activities:
             return jsonify({"error": "There are no activities!"}), 404
 
-        activities_dict_list = [activity.to_dict() for activity in activities]
+        for activity in activities:
+            subject = Subject.query.get(activity.id_subject)
+            professor = Professor.query.get(activity.id_professor)
+            activities_list_dto.append(ActivityResponseDTO(activity, subject, professor).to_dict())
 
         return jsonify({"message": "Activities found",
-                        "activities": activities_dict_list}), 200
+                        "activities": activities_list_dto}), 200
 
     @staticmethod
     def get_all_accomplished_activities(id_student):
         accomplishments = StudentAccomplishment.query.filter_by(id_student=id_student).all()
         activities = list()
+        activities_list_dto = list()
 
         for accomplishment in accomplishments:
             activity: Activity = Activity.query.get(accomplishment.id_activity)
@@ -102,15 +114,19 @@ class ActivityService:
         if not activities:
             return jsonify({"error": "There are no accomplished activities!"}), 404
 
-        activities_dict_list = [activity.to_dict() for activity in activities]
+        for activity in activities:
+            subject = Subject.query.get(activity.id_subject)
+            professor = Professor.query.get(activity.id_professor)
+            activities_list_dto.append(ActivityResponseDTO(activity, subject, professor).to_dict())
 
         return jsonify({"message": "Activities found",
-                        "activities": activities_dict_list}), 200
+                        "activities": activities_list_dto}), 200
 
     @staticmethod
     def get_all_unaccomplished_activities(id_classroom, id_student):
         activity_distributions = ActivityDistribution.query.filter_by(id_classroom=id_classroom).all()
         activities = list()
+        activities_list_dto = list()
 
         if not activity_distributions:
             return jsonify({"error": "There are no activities in this classroom!"}), 404
@@ -126,15 +142,19 @@ class ActivityService:
         if not unaccomplished_activities:
             return jsonify({"error": "There are no activities!"}), 404
 
-        activities_dict_list = [activity.to_dict() for activity in unaccomplished_activities]
+        for activity in unaccomplished_activities:
+            subject = Subject.query.get(activity.id_subject)
+            professor = Professor.query.get(activity.id_professor)
+            activities_list_dto.append(ActivityResponseDTO(activity, subject, professor).to_dict())
 
         return jsonify({"message": "Activities found",
-                        "activities": activities_dict_list}), 200
+                        "activities": activities_list_dto}), 200
 
     @staticmethod
     def get_activities_by_classroom_id(id_classroom):
         activity_distributions = ActivityDistribution.query.filter_by(id_classroom=id_classroom).all()
         activities = list()
+        activities_list_dto = list()
 
         if not activity_distributions:
             return jsonify({"error": "There are no activities in this classroom!"}), 404
@@ -142,10 +162,13 @@ class ActivityService:
         for activity_distribution in activity_distributions:
             activities.append(Activity.query.get(activity_distribution.id_activity))
 
-        activities_dict_list = [activity.to_dict() for activity in activities]
+        for activity in activities:
+            subject = Subject.query.get(activity.id_subject)
+            professor = Professor.query.get(activity.id_professor)
+            activities_list_dto.append(ActivityResponseDTO(activity, subject, professor).to_dict())
 
-        return jsonify({"message": "Activity found",
-                        "activities": activities_dict_list}), 200
+        return jsonify({"message": "Activities found",
+                        "activities": activities_list_dto}), 200
 
     @staticmethod
     def publish_activity(id_activity):
