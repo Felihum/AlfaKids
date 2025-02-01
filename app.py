@@ -12,6 +12,7 @@ from views.classroom_view import bp_classroom
 from views.student_answer_view import bp_answer
 from views.auth_view import bp_auth
 from views.student_accomplishment_view import bp_accomplishment
+from views.chatbot_view import bp_chatbot
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
@@ -39,6 +40,7 @@ def create_app():
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_accomplishment)
     app.register_blueprint(bp_answer)
+    app.register_blueprint(bp_chatbot)
 
     database.init_app(app)
 

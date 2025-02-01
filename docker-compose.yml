@@ -13,7 +13,7 @@ services:
       DB_PASSWORD: password
       DB_NAME: alfaKidsDb
       FLASK_ENV: development
-      SQLALCHEMY_DATABASE_URI: postgresql://postgres:password@postgres-container:5432/alfaKidsDb
+      SQLALCHEMY_DATABASE_URI: postgresql://postgres:password@db:5432/alfaKidsDb
     depends_on:
       - db # Garante que o banco estará disponível antes da aplicação iniciar
     command: >
