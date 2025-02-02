@@ -1,9 +1,7 @@
 from flask import Blueprint, request, jsonify
-import requests
+from services.chatbot_service import ChatbotService
 
 bp_chatbot = Blueprint("chatbot", __name__, url_prefix="/chatbot")
-
-RASA_URL = "http://localhost:5005/webhooks/rest/webhook"
 
 @bp_chatbot.route("/message", methods=["POST"])
 def chatbot_message():
@@ -12,13 +10,9 @@ def chatbot_message():
         user_message = data.get("message", "")
         sender_id = data.get("sender", "default")
 
-        # Enviar a mensagem para o chatbot Rasa
-        response = requests.post(RASA_URL, json={"sender": sender_id, "message": user_message})
+        response, status_code = ChatbotService.send_message_to_rasa(user_message, sender_id)
 
-        if response.status_code == 200:
-            return jsonify({"response": response.json()}), 200
-        else:
-            return jsonify({"error": "Erro ao comunicar com o chatbot."}), 500
+        return jsonify(response), status_code
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000" # Mapeie a porta usada pela aplicação
+      - "5000:5000"  # Mapeie a porta usada pela aplicação
     environment:
       DB_HOST: db
       DB_PORT: 5432
@@ -15,7 +15,8 @@ services:
       FLASK_ENV: development
       SQLALCHEMY_DATABASE_URI: postgresql://postgres:password@db:5432/alfaKidsDb
     depends_on:
-      - db # Garante que o banco estará disponível antes da aplicação iniciar
+      - db  # Garante que o banco estará disponível antes da aplicação iniciar
+      - chatbot  # Garante que o chatbot será iniciado
     command: >
       sh -c "
       flask db upgrade &&
@@ -28,7 +29,7 @@ services:
     container_name: postgres-container
     restart: always
     ports:
-      - "5432:5432" # Porta do PostgreSQL
+      - "5432:5432"  # Porta do PostgreSQL
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -38,6 +39,15 @@ services:
     networks:
       - app-network
 
+  chatbot:
+    image: chatbot:latest
+    container_name: chatbot
+    ports:
+      - "5005:5005"  # Porta para o servidor HTTP do Rasa
+    networks:
+      - app-network
+    command: ["rasa", "run", "--enable-api", "--cors", "*"]
+  
 volumes:
   postgres-data:
     driver: local
