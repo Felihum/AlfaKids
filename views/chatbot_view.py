@@ -10,9 +10,7 @@ def chatbot_message():
         user_message = data.get("message", "")
         sender_id = data.get("sender", "default")
 
-        response, status_code = ChatbotService.send_message_to_rasa(user_message, sender_id)
-
-        return jsonify(response), status_code
+        return ChatbotService.send_message_to_rasa(user_message, sender_id)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

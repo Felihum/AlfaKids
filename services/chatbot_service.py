@@ -1,7 +1,9 @@
+from imaplib import Debug
+
 import requests
 from flask import jsonify
 
-RASA_URL = "http://chatbot:5005/webhooks/rest/webhook"
+RASA_URL = "http://localhost:5005/webhooks/rest/webhook"
 
 class ChatbotService:
     @staticmethod
@@ -20,8 +22,9 @@ class ChatbotService:
 
             # Exibe a resposta bruta do Rasa
             try:
-                rasa_response = response.json()  # Aqui tentamos extrair a resposta JSON do Rasa
-                print(" Resposta do Rasa:", rasa_response)  # Exibe a resposta do Rasa
+                rasa_response = response.json()
+                print(rasa_response[0]["recipient_id"])
+                print(" Resposta do Rasa:", rasa_response[0])  # Exibe a resposta do Rasa
             except ValueError as e:
                 # Caso o conteúdo não seja um JSON válido
                 print(" Erro ao processar a resposta JSON:", e)
@@ -30,7 +33,8 @@ class ChatbotService:
             # Verifica se a resposta do Rasa é válida (uma lista)
             if rasa_response and isinstance(rasa_response, list):
                 # Retorna a resposta do Rasa em formato JSON
-                return jsonify(rasa_response), 200
+                return jsonify({"message": "Rasa response!",
+                        "student": rasa_response[0]}), 200
             else:
                 # Caso a resposta não seja uma lista válida
                 print(" Resposta inválida do Rasa:", rasa_response)
