@@ -1,9 +1,7 @@
-from imaplib import Debug
-
 import requests
 from flask import jsonify
 
-RASA_URL = "http://localhost:5005/webhooks/rest/webhook"
+RASA_URL = "http://chatbot:5005/webhooks/rest/webhook"
 
 class ChatbotService:
     @staticmethod
