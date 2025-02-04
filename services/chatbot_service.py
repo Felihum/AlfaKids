@@ -32,7 +32,7 @@ class ChatbotService:
             if rasa_response and isinstance(rasa_response, list):
                 # Retorna a resposta do Rasa em formato JSON
                 return jsonify({"message": "Rasa response!",
-                        "student": rasa_response[0]}), 200
+                                "response": rasa_response[0]}), 200
             else:
                 # Caso a resposta não seja uma lista válida
                 print(" Resposta inválida do Rasa:", rasa_response)
