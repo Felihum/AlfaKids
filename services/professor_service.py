@@ -2,7 +2,7 @@ from flask import Request, jsonify
 from models.professor.professor import Professor
 from db import database
 from models.class_allocation.class_allocation import ClassAllocation
-
+import bcrypt
 
 class ProfessorService:
     @staticmethod
@@ -17,7 +17,9 @@ class ProfessorService:
         if not name or not email or not password or not registration:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
-        new_professor: Professor = Professor(name, email, password, registration)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # Encripted Password
+
+        new_professor: Professor = Professor(name, email, hashed_password, registration)
         database.session.add(new_professor)
         database.session.commit()
 
@@ -63,7 +65,7 @@ class ProfessorService:
 
         professor.name = name
         professor.email = email
-        professor.password = password
+        professor.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         professor.registration = registration
 
         database.session.commit()

@@ -2,7 +2,7 @@ from flask import Request, jsonify
 from models.student.student import Student
 from flask_jwt_extended import create_access_token
 from models.professor.professor import Professor
-
+import bcrypt
 
 class AuthService:
 
@@ -16,9 +16,11 @@ class AuthService:
         if not student:
             return jsonify({"error": "Invalid Credentials"}), 401
 
-        if student.password != password:
+        # Verificando a senha usando bcrypt
+        if not bcrypt.checkpw(password.encode('utf-8'), student.password.encode('utf-8')):
             return jsonify({"error": "Invalid Credentials"}), 401
 
+        # Gerando o token JWT para o professor
         access_token = create_access_token(identity={"id": student.id})
 
         return jsonify({"token": access_token}), 200
@@ -33,9 +35,11 @@ class AuthService:
         if not professor:
             return jsonify({"error": "Invalid Credentials"}), 401
 
-        if professor.password != password:
+        # Verificando a senha usando bcrypt
+        if not bcrypt.checkpw(password.encode('utf-8'), professor.password.encode('utf-8')):
             return jsonify({"error": "Invalid Credentials"}), 401
 
+        # Gerando o token JWT para o professor
         access_token = create_access_token(identity={"id": professor.id})
 
         return jsonify({"token": access_token}), 200

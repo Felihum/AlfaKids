@@ -4,7 +4,7 @@ from flask import Request, jsonify
 from models.student.student import Student
 from db import database
 from models.class_allocation.class_allocation import ClassAllocation
-
+import bcrypt
 
 class StudentService:
     @staticmethod
@@ -22,7 +22,9 @@ class StudentService:
         if not name or not email or not password or not age or not gender or not autism_level or not school_year:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
-        new_student: Student = Student(name, email, password, age, gender, autism_level, school_year)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # Encripted Password
+
+        new_student: Student = Student(name, email, hashed_password, age, gender, autism_level, school_year)
         database.session.add(new_student)
         database.session.commit()
 
@@ -100,7 +102,7 @@ class StudentService:
 
         student.name = name
         student.email = email
-        student.password = password
+        student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         student.age = age
         student.gender = gender
         student.autism_level = autism_level
