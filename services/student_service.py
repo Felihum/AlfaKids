@@ -24,7 +24,7 @@ class StudentService:
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # Encripted Password
 
-        new_student: Student = Student(name, email, hashed_password, age, gender, autism_level, school_year)
+        new_student: Student = Student(name, email, hashed_password.decode('utf-8'), age, gender, autism_level, school_year)
         database.session.add(new_student)
         database.session.commit()
 
