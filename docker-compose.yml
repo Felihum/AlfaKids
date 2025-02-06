@@ -1,22 +1,28 @@
 services:
   app:
     image: alfakids:latest
+    env_file:
+      - .env # Isso garante que o Docker Compose carregue as variáveis do .env
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"  # Mapeie a porta usada pela aplicação
+      - ${BACKEND_PORT}:${BACKEND_PORT}  # Mapeie a porta usada pela aplicação
     environment:
       DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: password
-      DB_NAME: alfaKidsDb
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
       FLASK_ENV: development
-      SQLALCHEMY_DATABASE_URI: postgresql://postgres:password@db:5432/alfaKidsDb
+      SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI}
     depends_on:
-      - db  # Garante que o banco estará disponível antes da aplicação iniciar
-      - chatbot  # Garante que o chatbot será iniciado
+      db:
+        condition: service_healthy  # Espera o banco estar pronto
+
+      chatbot:
+        condition: service_started  # Apenas espera o container iniciar
+
     command: >
       sh -c "
       flask db upgrade &&
@@ -24,26 +30,34 @@ services:
     networks:
       - app-network
 
+  # Postgres Service
   db:
     image: postgres:15
     container_name: postgres-container
     restart: always
     ports:
-      - "5432:5432"  # Porta do PostgreSQL
+      - ${DB_PORT}:${DB_PORT}  # Porta do PostgreSQL
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: alfaKidsDb
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Chatbot Service
   chatbot:
     image: chatbot:latest
     container_name: chatbot
     ports:
-      - "5005:5005"  # Porta para o servidor HTTP do Rasa
+      - ${CHATBOT_PORT}:${CHATBOT_PORT}  # Porta para o servidor HTTP do Rasa
     networks:
       - app-network
     command: ["rasa", "run", "--enable-api", "--cors", "*"]
