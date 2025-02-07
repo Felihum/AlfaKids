@@ -1,4 +1,6 @@
 from flask import Flask
+from itsdangerous import URLSafeTimedSerializer
+
 from db import database
 from config import app_config, app_active
 from flask_migrate import Migrate
@@ -15,6 +17,7 @@ from views.student_accomplishment_view import bp_accomplishment
 from views.chatbot_view import bp_chatbot
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 
 config = app_config.get(app_active)
 
@@ -29,6 +32,11 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
     app.config["JWT_SECRET_KEY"] = config.JWT_SECRET_KEY
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = config.JWT_ACCESS_TOKEN_EXPIRES
+    app.config['MAIL_SERVER'] = config.MAIL_SERVER
+    app.config['MAIL_PORT'] = config.MAIL_PORT
+    app.config['MAIL_USE_TLS'] = config.MAIL_USE_TLS
+    app.config['MAIL_USERNAME'] = config.MAIL_USERNAME
+    app.config['MAIL_PASSWORD'] = config.MAIL_PASSWORD
 
     app.register_blueprint(bp_student)
     app.register_blueprint(bp_accountable)

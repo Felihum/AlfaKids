@@ -10,10 +10,9 @@ DB_PORT = os.getenv('DB_PORT')
 SECRET = os.getenv('SECRET')
 IP_HOST = os.getenv('IP_HOST')
 PORT_HOST = os.getenv('PORT_HOST')
-SQLALCHEMY_DATABASE_URI = os. getenv('SQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))
-
 
 class Config(object):
     CRSF_ENABLE = True
@@ -35,6 +34,12 @@ class DevelopmentConfig(Config):
     
     JWT_SECRET_KEY =  JWT_SECRET_KEY
     JWT_ACCESS_TOKEN_EXPIRES = JWT_ACCESS_TOKEN_EXPIRES
+
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = int(os.getenv('MAIL_PORT'))
+    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
 
 app_config = {
