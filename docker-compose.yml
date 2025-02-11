@@ -16,6 +16,8 @@ services:
       DB_NAME: ${DB_NAME}
       FLASK_ENV: development
       SQLALCHEMY_DATABASE_URI: ${SQLALCHEMY_DATABASE_URI}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
     depends_on:
       db:
         condition: service_healthy  # Espera o banco estar pronto
@@ -61,7 +63,7 @@ services:
     networks:
       - app-network
     command: ["rasa", "run", "--enable-api", "--cors", "*"]
-  
+
 volumes:
   postgres-data:
     driver: local
