@@ -47,7 +47,7 @@ services:
     networks:
       - app-network
     command: ["rasa", "run", "--enable-api", "--cors", "*"]
-  
+
 volumes:
   postgres-data:
     driver: local
