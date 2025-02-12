@@ -20,8 +20,8 @@ services:
       db:
         condition: service_healthy  # Espera o banco estar pronto
 
-      chatbot:
-        condition: service_started  # Apenas espera o container iniciar
+      #chatbot:
+      #  condition: service_started  # Apenas espera o container iniciar
 
     command: >
       sh -c "
@@ -53,14 +53,14 @@ services:
       retries: 5
 
   # Chatbot Service
-  chatbot:
-    image: chatbot:latest
-    container_name: chatbot
-    ports:
-      - ${CHATBOT_PORT}:${CHATBOT_PORT}  # Porta para o servidor HTTP do Rasa
-    networks:
-      - app-network
-    command: ["rasa", "run", "--enable-api", "--cors", "*"]
+  #chatbot:
+  #  image: chatbot:latest
+  #  container_name: chatbot
+  #  ports:
+  #    - ${CHATBOT_PORT}:${CHATBOT_PORT}  # Porta para o servidor HTTP do Rasa
+  #  networks:
+  #    - app-network
+  #  command: ["rasa", "run", "--enable-api", "--cors", "*"]
   
 volumes:
   postgres-data:
