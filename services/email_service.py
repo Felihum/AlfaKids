@@ -1,9 +1,9 @@
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import current_app, Request, jsonify
-import bcrypt
 from models.student.student import Student
 from db import database
+import bcrypt
 
 
 class EmailService:
@@ -46,8 +46,11 @@ class EmailService:
         student: Student = Student.query.filter_by(email=email).first()
         new_password = request.json.get('password')
 
-        student.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+        if not new_password:
+            return jsonify({'error': 'A nova senha não foi fornecida.'}), 400
 
+        # Criptografar a nova senha antes de salvar
+        student.password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
         database.session.commit()
 
         return jsonify({'message': 'Senha redefinida com sucesso!'}), 200
