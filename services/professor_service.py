@@ -19,7 +19,7 @@ class ProfessorService:
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # Encripted Password
 
-        new_professor: Professor = Professor(name, email, hashed_password, registration)
+        new_professor: Professor = Professor(name, email, hashed_password.decode('utf-8'), registration)
         database.session.add(new_professor)
         database.session.commit()
 
