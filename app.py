@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from db import database
 from config import app_config, app_active
 from flask_migrate import Migrate
@@ -10,10 +10,12 @@ from views.question_view import bp_question
 from views.professor_view import bp_professor
 from views.classroom_view import bp_classroom
 from views.student_answer_view import bp_answer
+from views.email_view import bp_email
 from views.auth_view import bp_auth
 from views.student_accomplishment_view import bp_accomplishment
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from mail import mail
 
 config = app_config.get(app_active)
 
@@ -29,6 +31,13 @@ def create_app():
     app.config["JWT_SECRET_KEY"] = config.JWT_SECRET_KEY
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = config.JWT_ACCESS_TOKEN_EXPIRES
 
+    app.config['MAIL_SERVER'] = config.MAIL_SERVER
+    app.config['MAIL_PORT'] = config.MAIL_PORT
+    app.config['MAIL_USERNAME'] = config.MAIL_USERNAME
+    app.config['MAIL_PASSWORD'] = config.MAIL_PASSWORD
+    app.config['MAIL_USE_TLS'] = config.MAIL_USE_TLS
+    app.config['MAIL_USE_SSL'] = config.MAIL_USE_SSL
+
     app.register_blueprint(bp_student)
     app.register_blueprint(bp_accountable)
     app.register_blueprint(bp_activity)
@@ -39,8 +48,10 @@ def create_app():
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_accomplishment)
     app.register_blueprint(bp_answer)
+    app.register_blueprint(bp_email)
 
     database.init_app(app)
+    mail.init_app(app)
 
     migrate = Migrate()
 
