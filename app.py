@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from dotenv import load_dotenv
+from flask import Flask
 from db import database
 from config import app_config, app_active
 from flask_migrate import Migrate
@@ -10,69 +11,61 @@ from views.question_view import bp_question
 from views.professor_view import bp_professor
 from views.classroom_view import bp_classroom
 from views.student_answer_view import bp_answer
-from views.email_view import bp_email
 from views.auth_view import bp_auth
+from views.email_view import bp_email
 from views.student_accomplishment_view import bp_accomplishment
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from mail import mail
+
+load_dotenv()
 
 config = app_config.get(app_active)
 
+app = Flask(__name__, template_folder='templates')
 
-def create_app():
-    app = Flask(__name__, template_folder='templates')
+app.secret_key = config.SECRET
+app.config.from_object(config)
+app.config.from_pyfile('config.py')
+app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
+app.config["JWT_SECRET_KEY"] = config.JWT_SECRET_KEY
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = config.JWT_ACCESS_TOKEN_EXPIRES
 
-    app.secret_key = config.SECRET
-    app.config.from_object(config)
-    app.config.from_pyfile('config.py')
-    app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
-    app.config["JWT_SECRET_KEY"] = config.JWT_SECRET_KEY
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = config.JWT_ACCESS_TOKEN_EXPIRES
+app.register_blueprint(bp_student)
+app.register_blueprint(bp_accountable)
+app.register_blueprint(bp_activity)
+app.register_blueprint(bp_subject)
+app.register_blueprint(bp_question)
+app.register_blueprint(bp_professor)
+app.register_blueprint(bp_classroom)
+app.register_blueprint(bp_auth)
+app.register_blueprint(bp_accomplishment)
+app.register_blueprint(bp_answer)
+app.register_blueprint(bp_email)
 
-    app.config['MAIL_SERVER'] = config.MAIL_SERVER
-    app.config['MAIL_PORT'] = config.MAIL_PORT
-    app.config['MAIL_USERNAME'] = config.MAIL_USERNAME
-    app.config['MAIL_PASSWORD'] = config.MAIL_PASSWORD
-    app.config['MAIL_USE_TLS'] = config.MAIL_USE_TLS
-    app.config['MAIL_USE_SSL'] = config.MAIL_USE_SSL
+database.init_app(app)
 
-    app.register_blueprint(bp_student)
-    app.register_blueprint(bp_accountable)
-    app.register_blueprint(bp_activity)
-    app.register_blueprint(bp_subject)
-    app.register_blueprint(bp_question)
-    app.register_blueprint(bp_professor)
-    app.register_blueprint(bp_classroom)
-    app.register_blueprint(bp_auth)
-    app.register_blueprint(bp_accomplishment)
-    app.register_blueprint(bp_answer)
-    app.register_blueprint(bp_email)
+migrate = Migrate()
 
-    database.init_app(app)
-    mail.init_app(app)
+migrate.init_app(app, database)
 
-    migrate = Migrate()
+jwt = JWTManager(app)
 
-    migrate.init_app(app, database)
+CORS(app)
 
-    jwt = JWTManager(app)
+with app.app_context():
+    from models.student.student import Student
+    from models.subject.subject import Subject
+    from models.activity.activity import Activity
+    from models.question.question import Question
+    from models.question.discursive_question import DiscursiveQuestion
+    from models.question.objective_question import ObjectiveQuestion
+    from models.professor.professor import Professor
+    from models.accountable.accountable import Accountable
+    from models.activity_distribution.activity_distribution import ActivityDistribution
+    from models.class_allocation.class_allocation import ClassAllocation
+    from models.student_accomplishment.student_accomplishment import StudentAccomplishment
+    from models.student_answer.student_answer import StudentAnswer
 
-    CORS(app)
-
-    with app.app_context():
-        from models.student.student import Student
-        from models.subject.subject import Subject
-        from models.activity.activity import Activity
-        from models.question.question import Question
-        from models.question.discursive_question import DiscursiveQuestion
-        from models.question.objective_question import ObjectiveQuestion
-        from models.professor.professor import Professor
-        from models.accountable.accountable import Accountable
-        from models.activity_distribution.activity_distribution import ActivityDistribution
-        from models.class_allocation.class_allocation import ClassAllocation
-        from models.student_accomplishment.student_accomplishment import StudentAccomplishment
-        from models.student_answer.student_answer import StudentAnswer
-
-    return app
+if __name__ == "__main__":
+    app.run(debug=True)

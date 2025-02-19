@@ -1,4 +1,4 @@
-import os, random, string
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,12 +10,12 @@ DB_PORT = os.getenv('DB_PORT')
 SECRET = os.getenv('SECRET')
 IP_HOST = os.getenv('IP_HOST')
 PORT_HOST = os.getenv('PORT_HOST')
-SQLALCHEMY_DATABASE_URI = os. getenv('SQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
 JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 JWT_ACCESS_TOKEN_EXPIRES = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES'))
 
 MAIL_SERVER=os.getenv('MAIL_SERVER')
-MAIL_PORT=int(os.getenv('MAIL_PORT'))
+MAIL_PORT=int(os.getenv('MAIL_PORT', 587))
 MAIL_USERNAME=os.getenv('MAIL_USERNAME')
 MAIL_PASSWORD=os.getenv('MAIL_PASSWORD')
 MAIL_USE_TLS=os.getenv('MAIL_USE_TLS') == 'True'
@@ -43,13 +43,13 @@ class DevelopmentConfig(Config):
     JWT_SECRET_KEY =  JWT_SECRET_KEY
     JWT_ACCESS_TOKEN_EXPIRES = JWT_ACCESS_TOKEN_EXPIRES
 
-    MAIL_SERVER = MAIL_SERVER
-    MAIL_PORT = MAIL_PORT
-    MAIL_USERNAME = MAIL_USERNAME
-    MAIL_PASSWORD = MAIL_PASSWORD
-    MAIL_USE_TLS = MAIL_USE_TLS
-    MAIL_USE_SSL = MAIL_USE_SSL
-    DEL_EMAIL = DEL_EMAIL
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS') == 'true'
+    MAIL_USE_SSL = os.getenv('MAIL_USE_SSL') == 'true'
+    DEL_EMAIL = os.getenv('DEL_EMAIL')
 
 
 app_config = {

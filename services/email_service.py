@@ -1,29 +1,27 @@
-from flask import Request, jsonify
-from flask_mail import Message
-from mail import mail
+import requests
+from flask import jsonify, Request
 
-import config
-
+EMAIL_URL = "http://email:5050/submit"
 
 class EmailService:
 
     @staticmethod
     def submit(request: Request):
+        data = request.get_json()
+
+        recipient = data.get("recipient")
+
         try:
-            #request_submit_email = request.get_json()
+            response = requests.post(EMAIL_URL, json={"recipient": recipient})
 
-            #email:str = request_submit_email.get("email")
+            # Verifica o status da resposta
+            if response.status_code != 200:
+                print(f" Erro ao comunicar com o serviço: {response.status_code}")
+                return jsonify({"error": "Erro ao se comunicar com o serviço"}), 500
 
-            #if not email:
-            #    return jsonify({"message": "Email not provided"}), 400
+            return jsonify({"message": "Email enviado com sucesso!"}), 200
 
-            msg = Message(subject="Recuperação de Senha",
-                          sender="alfakids.app@gmail.com",
-                          recipients=["nucap.games@gmail.com"])
-            msg.body = "Acesse o seguinte link para redefinir sua senha."
-            print(msg)
-            mail.send(msg)
-            return jsonify({"message": "Email sent successfully!"}), 200
-        except Exception as ex:
-            print(f"An exception occurred: {ex}")
-            return jsonify({"message": "Failed to send email."}), 500
+        except Exception as e:
+            # Erro genérico
+            print(f" Erro interno no backend: {str(e)}")
+            return jsonify({"error": f"Erro interno no serviço: {str(e)}"}), 500
