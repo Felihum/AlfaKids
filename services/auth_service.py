@@ -20,7 +20,7 @@ class AuthService:
         if not bcrypt.checkpw(password.encode('utf-8'), student.password.encode('utf-8')):
             return jsonify({"error": "Invalid Credentials"}), 401
 
-        # Gerando o token JWT para o professor
+        # Gerando o token JWT para o aluno
         access_token = create_access_token(identity={"id": student.id})
 
         return jsonify({"token": access_token}), 200
