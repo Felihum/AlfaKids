@@ -34,6 +34,11 @@ def update_student(id_student):
     return StudentService.update_student(id_student, request)
 
 
+@bp_student.route("/update/password/<string:email>", methods=["PUT"])
+def update_password(email):
+    return StudentService.update_password(email, request)
+
+
 @bp_student.route("/delete/<string:id_student>", methods=["DELETE"])
 def delete_student(id_student):
     return StudentService.delete_student(id_student)

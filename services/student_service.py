@@ -102,7 +102,7 @@ class StudentService:
 
         student.name = name
         student.email = email
-        student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
         student.age = age
         student.gender = gender
         student.autism_level = autism_level
@@ -111,6 +111,27 @@ class StudentService:
         database.session.commit()
 
         return jsonify({"message": "Student updated successfully!",
+                        "student": student.to_dict()}), 200
+
+    @staticmethod
+    def update_password(email, request: Request):
+        student: Student = Student.query.filter_by(email=email).first()
+
+        if not student:
+            return jsonify({"error": "Student not found"}), 404
+
+        request_student = request.get_json()
+
+        password: str = request_student["password"]
+
+        if not password:
+            return jsonify({"error": "Some field(s) has no value."}), 400
+
+        student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
+
+        database.session.commit()
+
+        return jsonify({"message": "Password updated successfully!",
                         "student": student.to_dict()}), 200
 
     @staticmethod
