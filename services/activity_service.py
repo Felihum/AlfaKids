@@ -3,6 +3,8 @@ from db import database
 from models.activity.activity_status import ActivityStatus
 from models.activity.activity import Activity
 from models.activity.activity_response_dto import ActivityResponseDTO
+from models.question.discursive_question import DiscursiveQuestion
+from models.question.objective_question import ObjectiveQuestion
 from models.subject.subject import Subject
 from models.professor.professor import Professor
 from models.classroom.classroom import Classroom
@@ -227,8 +229,18 @@ class ActivityService:
 
         if activity_questions:
             for activity_question in activity_questions:
-                database.session.delete(activity_question)
-                database.session.commit()
+                if activity_question.type == "objective":
+                    objective_question = ObjectiveQuestion.query.filter_by(id_question=activity_question.id).first()
+                    database.session.delete(objective_question)
+                    database.session.commit()
+
+                else:
+                    discursive_question = DiscursiveQuestion.query.filter_by(id_question=activity_question.id).first()
+                    database.session.delete(discursive_question)
+                    database.session.commit()
+
+                #database.session.delete(activity_question)
+                #database.session.commit()
 
         database.session.delete(activity)
         database.session.commit()
