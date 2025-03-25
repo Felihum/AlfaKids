@@ -29,6 +29,11 @@ def get_student_by_email(email):
     return StudentService.get_student_by_email(email)
 
 
+@bp_student.route("/filterByEmail/<string:email>", methods=["GET"])
+def filter_students_by_email(email):
+    return StudentService.filter_students_by_email(email)
+
+
 @bp_student.route("/update/<string:id_student>", methods=["PUT"])
 def update_student(id_student):
     return StudentService.update_student(id_student, request)

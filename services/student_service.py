@@ -64,6 +64,18 @@ class StudentService:
                         "student": student.to_dict()}), 200
 
     @staticmethod
+    def filter_students_by_email(email):
+        students = Student.query.where(Student.email.contains(email)).all()
+
+        if not students:
+            return jsonify({"error": "There are no students."}), 404
+
+        students_dict_list = [student.to_dict() for student in students]
+
+        return jsonify({"message": "Students found",
+                        "students": students_dict_list}), 200
+
+    @staticmethod
     def get_students_by_classroom_id(id_classroom):
         class_allocations = ClassAllocation.query.filter_by(id_classroom=id_classroom).all()
         students = list()
