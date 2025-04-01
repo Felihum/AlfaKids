@@ -10,16 +10,16 @@ class Student(database.Model):
     password = database.Column(database.String(120), nullable=False)
     age = database.Column(database.Integer, nullable=False)
     gender = database.Column(database.String(120), nullable=False)
-    autism_level = database.Column(database.Integer, nullable=False)
+    # autism_level = database.Column(database.Integer, nullable=False)
     school_year = database.Column(database.Integer, nullable=False)
 
-    def __init__(self, name, email, password, age, gender, autism_level, school_year):
+    def __init__(self, name, email, password, age, gender, school_year):
         self.name = name
         self.email = email
         self.password = password
         self.age = age
         self.gender = gender
-        self.autism_level = autism_level
+        # self.autism_level = autism_level
         self.school_year = school_year
 
     def to_dict(self):
@@ -29,5 +29,5 @@ class Student(database.Model):
                 "password": self.password,
                 "age": self.age,
                 "gender": self.gender,
-                "autism_level": self.autism_level,
+                # "autism_level": self.autism_level,
                 "school_year": self.school_year}

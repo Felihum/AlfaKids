@@ -16,15 +16,15 @@ class StudentService:
         password: str = request_student["password"]
         age: int = request_student["age"]
         gender: str = request_student["gender"]
-        autism_level: int = request_student["autism_level"]
+        # autism_level: int = request_student["autism_level"]
         school_year: int = request_student["school_year"]
 
-        if not name or not email or not password or not age or not gender or not autism_level or not school_year:
+        if not name or not email or not password or not age or not gender or not school_year:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()) # Encripted Password
 
-        new_student: Student = Student(name, email, hashed_password.decode('utf-8'), age, gender, autism_level, school_year)
+        new_student: Student = Student(name, email, hashed_password.decode('utf-8'), age, gender, school_year)
         database.session.add(new_student)
         database.session.commit()
 
@@ -109,7 +109,7 @@ class StudentService:
         autism_level: int = request_student["autism_level"]
         school_year: int = request_student["school_year"]
 
-        if not name or not email or not password or not age or not gender or not autism_level or not school_year:
+        if not name or not email or not password or not age or not gender or not school_year:
             return jsonify({"error": "Some field(s) has no value."}), 400
 
         student.name = name
@@ -117,7 +117,7 @@ class StudentService:
         student.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
         student.age = age
         student.gender = gender
-        student.autism_level = autism_level
+        # student.autism_level = autism_level
         student.school_year = school_year
 
         database.session.commit()
