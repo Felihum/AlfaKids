@@ -106,7 +106,7 @@ class StudentService:
         password: str = request_student["password"]
         age: int = request_student["age"]
         gender: str = request_student["gender"]
-        autism_level: int = request_student["autism_level"]
+        # autism_level: int = request_student["autism_level"]
         school_year: int = request_student["school_year"]
 
         if not name or not email or not password or not age or not gender or not school_year:
