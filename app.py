@@ -25,11 +25,6 @@ app = Flask(__name__, template_folder='templates')
 
 app.secret_key = config.SECRET
 app.config.from_object(config)
-app.config.from_pyfile('config.py')
-app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config.SQLALCHEMY_TRACK_MODIFICATIONS
-app.config["JWT_SECRET_KEY"] = config.JWT_SECRET_KEY
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = config.JWT_ACCESS_TOKEN_EXPIRES
 
 app.register_blueprint(bp_student)
 app.register_blueprint(bp_accountable)
